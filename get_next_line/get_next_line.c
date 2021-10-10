@@ -1,144 +1,88 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jbernard <marvin@42quebec.com>             +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/31 20:50:13 by jbernard          #+#    #+#             */
-/*   Updated: 2021/08/31 20:50:15 by jbernard         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 
-#define BUFFER_SIZE 20
-
-int		ft_findchar(char *str, char c)
+void	ft_strdel(char **saved)
 {
-	/* Returns -1 if no \n, index of \n if there is one */
-	int i;
-
-	i = -1;
-	while (str[++i] != c)
-	{	
-		// If looking for \0 and \0 is next char
-		if (c == '\0' && str[i + 1] == 0)
-			return (i + 1);
-
-		// If next char is \0 and didn't find char
-		else if (str[i + 1] == 0)
-			return (-1);
-	}
-	return (i);
-}
-
-char	*ft_getbeforechar(char *s, char c)
-{
-	size_t	len;
-	int 	i;
-	char	*ret;
-
-	/* get length up to c */
-	len = 0;
-	while(s[len] != c && s[len])
-		len++;
-
-	/* allocate memory for string return */
-	ret = (char *)malloc(sizeof(char) * (len + 1));
-	if (!ret)
-		return (NULL);
-
-	/* copy string until c */
-	i = 0;
-	while (s[i] && s[i] != '\n')
+	if (saved != NULL)
 	{
-		ret[i] = s[i];
-		i++;
+		free(*saved);
+		*saved = NULL;
 	}
-	ret[i] = s[i];
-	ret[++i] = '\0';
-
-	/* return ret */
-	return (ret);
 }
 
-char	*ft_getafterchar(char *s, char c, int end)
+char *get_next_line(int fd)
 {
-	int 	start;
-	int		i;
-	char	*ret;
+	ssize_t		count;
+	char		*buffer;
+	char		*auxline;	
+	static char	*save[4096];
 
-	// Get len before first \n
-	start = ft_findchar(s, c) + 1;
-	//printf("Start : %d\nEnd : %d\nDifference : %d\n\n", start, end, (end - start));
-
-	// Allocate memory for ret
-	ret = (char	*)malloc(sizeof(char) * (end - start));
-	if (!ret)
+	auxline = ft_strdup(" ");
+	if (fd < 0 || fd > 4096 || BUFFER_SIZE <= 0)
 		return (NULL);
-
-	// Copy string from first \n to last char
-	i = 0;
-	while (start < end)
-		ret[i++] = s[start++];
-	ret[i] = '\0';
-
-	return (ret);
-}
-
-char	*get_next_line(int fd)
-{
-	static char	*save = NULL;
-	char		buffer[BUFFER_SIZE + 1];
-	char		*line;
-	int			is_reading;
-	
-	// if (save)
-	// {
-	// 	line = ft_strdup(save);
-	// 	save = NULL;
-	// }
-
-	is_reading = 1;
-	while (is_reading)
+	buffer = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	if (!save[fd])
 	{
-		// READ
-		is_reading = read(fd, buffer, BUFFER_SIZE);
-		
-		if (is_reading == 0 && line)
-			return (line);
-		// If reading nothing -> Returns Null
-		if (is_reading == -1 || is_reading == 0)
-			return (NULL);
-		
-		//Add \0 at end of buffer
-		buffer[is_reading] = '\0';
-
-		//If reading for less then BUFFER_SIZE
-		if (is_reading < BUFFER_SIZE)
-			return (line);
-
-		// If buffer contains \n
-		if (ft_findchar(buffer, '\n') >= 0)
-		{	
-			// Get before \n
-			if(!line)
-				line = "";
-			line = ft_stradd(line, ft_getbeforechar(buffer, '\n'));
-			// Put leftovers in static
-			save = ft_getafterchar(buffer, '\n', is_reading);
-			// Return line
-			return (line);
+		if(read(fd, buffer, BUFFER_SIZE))
+		{
+			auxline = ft_chartostr(ft_beforejump(buffer), auxline);
+			if (!auxline)
+			{
+				ft_strdel(&auxline);
+				return(NULL);
+			}
+			save[fd] = ft_strchr(buffer, '\n');
+			return(auxline);
 		}
 		else
-		{
-			if(!line)
-				line = "";
-			line = ft_stradd(line, buffer);
-		}
+			return(NULL);
 	}
-	return ("Unknown Case #2");
+	else
+	{
+		if(read(fd, buffer, BUFFER_SIZE))
+		{
+			auxline = ft_chartostr(ft_beforejump(buffer), auxline);
+			if (!auxline)
+			{
+				ft_strdel(&auxline);
+				return(NULL);
+			}
+			auxline =ft_chartostr(save[fd], auxline);
+			save[fd] = ft_strchr(buffer, '\n');
+			if (!save[fd])
+				ft_strdel(save);
+			return(auxline);
+		}
+		else
+			return(NULL);
+	}
+	return(NULL);
 }
 
+ 
 
+int main()
+{
+	int 	fd;
+	int		fd2;
+	char	*line;
+	int		j;
+
+	fd = open("test.txt", O_RDONLY);
+	fd2 = open("test2.txt", O_RDONLY);
+	while (j < 6)
+	{
+		line = get_next_line(fd);
+		printf("[%s]\n", line);
+		j++;
+	}
+	j = 0;
+/*	while (j < 2)
+	{
+		line = get_next_line(fd2);
+		printf("[%s]\n", line);
+		j++;
+	}*/
+	return(0);
+}

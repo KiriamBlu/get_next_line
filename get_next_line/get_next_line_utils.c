@@ -1,77 +1,106 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jbernard <marvin@42quebec.com>             +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/31 20:52:37 by jbernard          #+#    #+#             */
-/*   Updated: 2021/08/31 20:52:38 by jbernard         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *str)
+ssize_t	ft_strlen(const char *c)
 {
-	size_t	i;
+	unsigned int	i;
 
 	i = 0;
-	while (str[i])
+	while (c[i] != '\0')
 		i++;
 	return (i);
 }
 
-char	*ft_strdup(const char *str)
-{
-	char	*ptr;
-	size_t	len_str;
-	size_t	i;
-
-	// Get size and allocate memory
-	len_str = ft_strlen(str);
-	ptr = malloc(sizeof(char) * len_str + 1);
-	if (!ptr)
-		return (0);
-
-	// Duplicating str into newly allocated str 
-	i = 0;
-	while (len_str--)
-		ptr[i++] = *str++;
-	ptr[i] = '\0';
-
-	return (ptr);
-}
-
-char	*ft_stradd(char *s1, char *s2)
+char	*ft_chartostr(char *buffer, char *auxline)
 {
 	char	*ptr;
 	size_t	len;
 	size_t i;
 	size_t j;
 
-	printf("OK1");
-	// Get size and allocate memory
-	len = ft_strlen(s1) + ft_strlen(s2) + 1;
+	len = ft_strlen(buffer) + ft_strlen(auxline) + 1;
 	ptr = (char	*)malloc(sizeof(char) * len);
 	if (!ptr)
-		return (0);
-
-	printf("OK2");
-	// Copy s1 string into new string
+		return (NULL);
 	i = -1;
-	while (s1[++i])
-	{
-		ptr[i] = s1[i];	
-	}
-
-	printf("OK3");
-	// Concatenate s2 into new string
+	while (buffer[++i])
+		ptr[i] = buffer[i];	
 	j = 0;
-	while (s2[j] && i < len - 1)
-	{
-		ptr[i++] = s2[j++];
-	}
-	ptr[--i] = '\0';
+	while (auxline[j] && i < len - 1)
+		ptr[i++] = auxline[j++];
+	ptr[i] = '\0';
 	return (ptr);
 }
+char	*ft_beforejump(char *buffer)
+{
+	char	*beforebuff;
+	ssize_t	i;
+	ssize_t	j;
+
+	i = 0;
+	j = 0;
+	if(!buffer)
+		return(NULL);
+	while(buffer[i] != '\n' && buffer[i] != '\0')
+		i++;
+	beforebuff = (char *)malloc(sizeof(char) * i + 1);
+	if(!beforebuff)
+		return(NULL);
+	while (j < i)
+	{
+		beforebuff[j] = buffer[j];
+		j++;
+	}
+	beforebuff[j] = '\0';
+	return(beforebuff);
+}
+
+ssize_t ft_findjump(char *buffer, int c)
+{
+	ssize_t j;
+
+	if (!buffer)
+		return (0);
+	while (buffer[j] != '\0')
+	{
+		if (buffer[j] == (unsigned char)c)
+			return (1);
+		j++;
+	}
+	return (0);
+}
+
+char	*ft_strchr(char *s, int c)
+{
+	unsigned int	i;
+
+	i = 0;
+	while (s[i] != '\0' && s[i] != (unsigned char)c)
+		i++;
+	if (s[i] == (unsigned char)c)
+		return (s + i + 1);
+	return (NULL);
+}
+
+char	*ft_strdup(const char *buffer)
+{
+	char	*aux;
+	ssize_t	i;
+
+	i = 0;
+	aux = (char *)malloc(ft_strlen(buffer) + 1 * sizeof(char));
+	if (!aux)
+		return (NULL);
+	while (buffer[i] != '\0')
+	{
+		aux[i] = buffer[i];
+		i++;
+	}
+	aux[i] = '\0';
+	return (aux);
+
+}
+
+
+
+
+
