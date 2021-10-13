@@ -7,38 +7,60 @@ char *ft_getline(int fd, char **save)
 	ssize_t num;
 
 	a = malloc(BUFFER_SIZE * sizeof(char) + 1);
-	if(!a)
-		return(NULL);
 	if (*save)
 	{
 		if(!ft_beforejump(*save))
 		{
 			read(fd, a, BUFFER_SIZE);
 			num = ft_strlen(*save) + ft_strlen(ft_beforejump(a));
-			ai = (char *)malloc(sizeof(char) * num + 1);
-			
-			ai = ft_chartostr(*save, ft_beforejump(a));
-			
-			printf("%s\n", a);
-			ai[num] = '\0';
-			*save = ft_substr(a, ft_strchr(a, '\n') - a + 1, BUFFER_SIZE);
+			if(num > BUFFER_SIZE)
+			{
+				ai = ft_chartostr(*save, ft_beforejump(a), BUFFER_SIZE);
+				ai[BUFFER_SIZE] = '\0';
+				if(ft_strlen(*save) < BUFFER_SIZE)
+				{
+					*save = ft_substr(a, BUFFER_SIZE - ft_strlen(*save) - 1, ft_strlen(a));
+				}
+				else
+				{	
+					a = ft_chartostr(*save, a, ft_strlen(a) + ft_strlen(*save));
+					*save = ft_substr(a, BUFFER_SIZE, ft_strlen(a));
+					return(ai);
+				}
+			}
+			else
+			{
+				ai = ft_chartostr(*save, ft_beforejump(a), num);
+					if(!ai)
+					{
+						*save = ft_chartostr(*save, a, ft_strlen(*save) + ft_strlen(a) + 1);
+						printf("%s\n", *save);
+						ft_getline(fd, save);
+					}
+				ai[num] = '\0';
+				*save = ft_substr(a, ft_strchr(a, '\n') - a + 1, BUFFER_SIZE);
+			}
 		}
 		else
 		{
 			num = ft_strlen(ft_beforejump(*save));
 			ai = (char *)malloc(sizeof(char) * num + 1);
-			ai = ft_chartostr(ft_beforejump(*save), a);
+			ai = ft_chartostr(ft_beforejump(*save), a, num);
 			ai[num] = '\0';
 			a = *save;
-			free(*save);
 			*save = ft_strchr(a, '\n');
 		}
 	}
 	else
 	{
 		num = read(fd, a, BUFFER_SIZE);
-		ai = ft_substr(a, 0, ft_strchr(a, '\n') - a);
-		*save = ft_substr(a, ft_strchr(a, '\n') - a + 1, BUFFER_SIZE);
+		if(ft_strchr(a, '\n'))
+		{
+			ai = ft_substr(a, 0, ft_strchr(a, '\n') - a - 1);
+			*save = ft_substr(a, ft_strchr(a, '\n') - a, BUFFER_SIZE);
+		}
+		else
+			ai = ft_substr(a, 0, BUFFER_SIZE);
 	}
 	return (ai);
 }
@@ -80,7 +102,7 @@ int main()
 
 	fd = open("test.txt", O_RDONLY);
 	fd2 = open("test2.txt", O_RDONLY);
-	while (j < 3)
+	while (j < 8)
 	{
 		line = get_next_line(fd);
 		printf("[%s]\n", line);
