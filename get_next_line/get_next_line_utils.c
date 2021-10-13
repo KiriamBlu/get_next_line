@@ -55,7 +55,7 @@ char	*ft_beforejump(const char *save)
 	{	
 		if (aux[i] == '\n')
 		{
-			beforebuff = ft_substr(aux, 0, i);
+			beforebuff = ft_substr(aux, 0, i + 1);
 			return(beforebuff);
 		}
 		i++;
