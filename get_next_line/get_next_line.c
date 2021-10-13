@@ -34,7 +34,6 @@ char *ft_getline(int fd, char **save)
 					if(!ai)
 					{
 						*save = ft_chartostr(*save, a, ft_strlen(*save) + ft_strlen(a) + 1);
-						printf("%s\n", *save);
 						ft_getline(fd, save);
 					}
 				ai[num] = '\0';
