@@ -63,7 +63,7 @@ char	*ft_beforejump(const char *save)
 	return(NULL);
 }
 
-char *ft_substr(char *s, unsigned int start, size_t len)
+char *ft_substr(const char *s, unsigned int start, size_t len)
 {
 	char *a;
 	size_t i;
@@ -105,24 +105,6 @@ char *ft_strchr(const char *s, int c)
 	return ((char *)s + i + 1);
 }
 
-char	*ft_strdup(const char *buffer)
-{
-	char	*aux;
-	ssize_t	i;
-
-	i = 0;
-	aux = (char *)malloc(ft_strlen(buffer) + 1 * sizeof(char));
-	if (!aux)
-		return (NULL);
-	while (buffer[i] != '\0')
-	{
-		aux[i] = buffer[i];
-		i++;
-	}
-	aux[i] = '\0';
-	return (aux);
-
-}
 
 
 

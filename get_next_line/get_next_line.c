@@ -7,7 +7,7 @@ char *ft_getline(int fd, char **save)
 	ssize_t num;
 		if (*save)
 		{
-			ai = ft_strdup(*save);
+			ai = ft_substr(*save, 0, ft_strlen(*save) + 1);
 			free(*save);
 			*save = malloc(sizeof(char) * BUFFER_SIZE + ft_strlen(ai));
 			read(fd, *save, BUFFER_SIZE);
@@ -33,26 +33,11 @@ char *ft_getline(int fd, char **save)
 	return (a);
 }
 
-int ft_freesave(char **save)
-{
-	if (!*save)
-		return (0);
-	if (!**save)
-	{
-		free(*save);
-		*save = NULL;
-		return (0);
-	}
-	return (1);
-}
-
 char *get_next_line(int fd)
 {
 	ssize_t		count;
-	char		*auxline;
 	static char	*save[4096];
 
-	auxline = ft_strdup("");
 	if (fd < 0 || fd > 4096 || BUFFER_SIZE <= 0)
 		return (NULL);
 	return (ft_getline(fd, &save[fd]));

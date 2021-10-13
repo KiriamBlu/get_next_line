@@ -11,8 +11,7 @@ ssize_t	ft_strlen(const char *c);
 char	*ft_beforejump(const char *save);
 ssize_t ft_findjump(char *buffer, int c);
 char	*ft_strchr(const char *s, int c);
-char	*ft_strdup(const char *buffer);
-char *ft_substr(char *s, unsigned int start, size_t len);
+char *ft_substr(const char *s, unsigned int start, size_t len);
 
 
 # endif
