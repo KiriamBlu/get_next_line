@@ -12,33 +12,27 @@ ssize_t	ft_strlen(const char *c)
 	return (i);
 }
 
-char	*ft_chartostr(char *buffer, const char *auxline)
+char	*ft_chartostr(const char *buffer, const char *auxline, size_t len)
 {
 	char	*ptr;
-	char	*aux;
-	size_t	len;
 	size_t i;
 	size_t j;
 
-	if(!auxline)
+	if(!auxline || !buffer)
 		return(NULL);
-	len = ft_strlen(buffer) + ft_strlen(auxline) + 1;
+	ptr = (char *)malloc(sizeof(char) * len + 1);
 	if (!ptr)
 		return (NULL);
 	i = 0;
-	aux = (char *)auxline;
-	if(buffer)
-	{
-		while (buffer[i])
-		{		
-			ptr[i] = buffer[i];	
-			i++;
-		}
+	while (buffer[i])
+	{		
+		ptr[i] = buffer[i];	
+		i++;
 	}
 	j = 0;
-	while (aux[j] && i < len - 1)
-		ptr[i++] = aux[j++];
-	ptr[i] = '\0';
+	while (auxline[j] && i < len - 1)
+		ptr[i++] = auxline[j++];
+	ptr[len] = '\0';
 	return (ptr);
 }
 
@@ -76,7 +70,7 @@ char *ft_substr(char *s, unsigned int start, size_t len)
 	size_t	lens;
 
 	lens = ft_strlen(s);
-	i = 0;
+ 	i = 0;
 	if (!s)
 		return (NULL);
 	if (start >= lens)
@@ -100,11 +94,15 @@ char *ft_strchr(const char *s, int c)
 	size_t i;
 
 	i = 0;
+	if (!s)
+		return(NULL);
 	while (s[i] && s[i] != (char)c)
+	{
 		i++;
-	if (s[i] == '\0' && c != 0)
+		if (s[i] == '\0' && c != 0)
 		return (NULL);
-	return ((char *)s + i);
+	}
+	return ((char *)s + i + 1);
 }
 
 char	*ft_strdup(const char *buffer)

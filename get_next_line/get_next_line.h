@@ -6,7 +6,7 @@
 # include <fcntl.h>
 
 char *get_next_line(int fd);
-char	*ft_chartostr(char *buffer, const char *auxline);
+char	*ft_chartostr(const char *buffer, const char *auxline, size_t len);
 ssize_t	ft_strlen(const char *c);
 char	*ft_beforejump(const char *save);
 ssize_t ft_findjump(char *buffer, int c);
