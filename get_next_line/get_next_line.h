@@ -6,11 +6,11 @@
 # include <fcntl.h>
 
 char *get_next_line(int fd);
-char	*ft_chartostr(char *buffer, char *auxline);
+char	*ft_chartostr(char *buffer, const char *auxline);
 ssize_t	ft_strlen(const char *c);
-char	*ft_beforejump(char **save);
+char	*ft_beforejump(const char *save);
 ssize_t ft_findjump(char *buffer, int c);
-char	*ft_strchr(char *s, int c);
+char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char *buffer);
 char *ft_substr(char *s, unsigned int start, size_t len);
 

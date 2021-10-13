@@ -1,25 +1,48 @@
 #include "get_next_line.h"
 
-void ft_getline(int fd, char **save, char *saved)
+char *ft_getline(int fd, char **save)
 {
-	char *aux;
+	char *a;
+	char *ai;
 	ssize_t num;
 
-	aux = malloc(BUFFER_SIZE + 1);
-	while ((!*save || !ft_strchr(*save, '\n')))
+	a = malloc(BUFFER_SIZE * sizeof(char) + 1);
+	if(!a)
+		return(NULL);
+	if (*save)
 	{
-		num = read(fd, aux, BUFFER_SIZE);
-		if (num <= 0)
-			return ;			
-		aux[num] = '\0';
-		if (!*save)
-			*save = ft_chartostr(saved, aux);
+		if(!ft_beforejump(*save))
+		{
+			read(fd, a, BUFFER_SIZE);
+			num = ft_strlen(*save) + ft_strlen(ft_beforejump(a));
+			ai = (char *)malloc(sizeof(char) * num + 1);
+			
+			ai = ft_chartostr(*save, ft_beforejump(a));
+			
+			printf("%s\n", a);
+			ai[num] = '\0';
+			*save = ft_substr(a, ft_strchr(a, '\n') - a + 1, BUFFER_SIZE);
+		}
 		else
-			*save = ft_strdup(aux);
+		{
+			num = ft_strlen(ft_beforejump(*save));
+			ai = (char *)malloc(sizeof(char) * num + 1);
+			ai = ft_chartostr(ft_beforejump(*save), a);
+			ai[num] = '\0';
+			a = *save;
+			free(*save);
+			*save = ft_strchr(a, '\n');
+		}
 	}
-	free(aux);
-	*save = ft_strdup("ME CAGO EN DIOS");
+	else
+	{
+		num = read(fd, a, BUFFER_SIZE);
+		ai = ft_substr(a, 0, ft_strchr(a, '\n') - a);
+		*save = ft_substr(a, ft_strchr(a, '\n') - a + 1, BUFFER_SIZE);
+	}
+	return (ai);
 }
+
 
 int ft_freesave(char **save)
 {
@@ -37,30 +60,13 @@ int ft_freesave(char **save)
 char *get_next_line(int fd)
 {
 	ssize_t		count;
-	char		*auxline;	
+	char		*auxline;
 	static char	*save[4096];
 
 	auxline = ft_strdup("");
 	if (fd < 0 || fd > 4096 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (save[fd])
-	{
-		if (!(ft_strchr(auxline, '\n')))
-		{
-			//no pasa por referencia cuando deberia debido a que si devuelve correctamente.
-			ft_getline(fd, &(save[fd]), save[fd]);
-			printf("%s\n", save[fd]);
-			auxline = ft_beforejump(&save[fd]);
-		}
-	}
-	else
-	{
-		ft_getline(fd, &save[fd], save[fd]);
-		if(!(ft_freesave(&save[fd])))
-			return(NULL);
-		auxline = ft_beforejump(&save[fd]);
-	}
-	return (auxline);
+	return (ft_getline(fd, &save[fd]));
 }
 
  
@@ -74,7 +80,7 @@ int main()
 
 	fd = open("test.txt", O_RDONLY);
 	fd2 = open("test2.txt", O_RDONLY);
-	while (j < 1)
+	while (j < 3)
 	{
 		line = get_next_line(fd);
 		printf("[%s]\n", line);

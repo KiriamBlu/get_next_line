@@ -12,18 +12,21 @@ ssize_t	ft_strlen(const char *c)
 	return (i);
 }
 
-char	*ft_chartostr(char *buffer, char *auxline)
+char	*ft_chartostr(char *buffer, const char *auxline)
 {
 	char	*ptr;
+	char	*aux;
 	size_t	len;
 	size_t i;
 	size_t j;
 
+	if(!auxline)
+		return(NULL);
 	len = ft_strlen(buffer) + ft_strlen(auxline) + 1;
-	ptr = (char	*)malloc(sizeof(char) * len);
 	if (!ptr)
 		return (NULL);
 	i = 0;
+	aux = (char *)auxline;
 	if(buffer)
 	{
 		while (buffer[i])
@@ -33,29 +36,37 @@ char	*ft_chartostr(char *buffer, char *auxline)
 		}
 	}
 	j = 0;
-	while (auxline[j] && i < len - 1)
-		ptr[i++] = auxline[j++];	
+	while (aux[j] && i < len - 1)
+		ptr[i++] = aux[j++];
 	ptr[i] = '\0';
 	return (ptr);
 }
 
-char	*ft_beforejump(char **save)
+char	*ft_beforejump(const char *save)
 {
 	char	*beforebuff;
+	char	*aux;
 	ssize_t	i;
 	ssize_t	j;
 	ssize_t len;
 
 	i = 0;
 	j = 0;
-	len = ft_strlen(*save);
-	if(!*save)
+
+	aux = (char *)save;
+	if(!aux)
 		return(NULL);
-	while(*save[i] != '\n' && *save[i] != '\0')
+	len = ft_strlen(aux);
+	while(i < len)
+	{	
+		if (aux[i] == '\n')
+		{
+			beforebuff = ft_substr(aux, 0, i);
+			return(beforebuff);
+		}
 		i++;
-	beforebuff = ft_substr(*save, 0, (i + 1));
-	*save = ft_substr(*save, (i + 1), len);
-	return(beforebuff);
+	}
+	return(NULL);
 }
 
 char *ft_substr(char *s, unsigned int start, size_t len)
@@ -84,16 +95,16 @@ char *ft_substr(char *s, unsigned int start, size_t len)
 	return (a);
 }
 
-char	*ft_strchr(char *s, int c)
+char *ft_strchr(const char *s, int c)
 {
-	unsigned int	i;
+	size_t i;
 
 	i = 0;
-	while (s[i] != '\0' && s[i] != (unsigned char)c)
+	while (s[i] && s[i] != (char)c)
 		i++;
-	if (s[i] == (unsigned char)c)
-		return (s + i + 1);
-	return (NULL);
+	if (s[i] == '\0' && c != 0)
+		return (NULL);
+	return ((char *)s + i);
 }
 
 char	*ft_strdup(const char *buffer)
