@@ -19,7 +19,7 @@ char *preparea(int fd, char **save, ssize_t num)
 	if(ft_strlen(ft_beforejump(*save)) != ft_strlen(*save))
 	{
 		ai = ft_strchr(*save, '\n');
-		free(*save);	
+		free(*save);
 		*save = ft_substr(ai, 0, ft_strlen(ai));
 	}
 	else
@@ -40,7 +40,7 @@ while(!ft_beforejump(*save) && read(fd, aux, BUFFER_SIZE))
 {
 	if(*save)
 	{
-		ai = ft_substr(*save, 0, ft_strlen(*save) + 1);
+		ai = ft_substr(*save, 0, ft_strlen(*save));
 		free(*save);
 		*save = malloc(sizeof(char) * BUFFER_SIZE + ft_strlen(ai));
 		num = read(fd, *save, BUFFER_SIZE);
@@ -84,18 +84,18 @@ int main()
 	j = 0;
 	fd = open("test.txt", O_RDONLY);
 	fd2 = open("test2.txt", O_RDONLY);
-	while (j < 1)
+	while (j < 300)
 	{
 		line = get_next_line(fd);
 		printf("%s", line);
 		j++;
 	}
 	j = 0;
-	while (j < 2)
+	/*while (j < 2)
 	{
 		line = get_next_line(fd2);
 		printf("%s", line);
 		j++;
 	}
-	return(0);
+	return(0);*/
 }

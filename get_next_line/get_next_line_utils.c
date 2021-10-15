@@ -96,13 +96,13 @@ char *ft_strchr(const char *s, int c)
 	i = 0;
 	if (!s)
 		return(NULL);
-	while (s[i] && s[i] != (char)c)
+	while (i < ft_strlen(s))
 	{
+		if(s[i] == (char)c)
+			return ((char *)s + i + 1);
 		i++;
-		if (s[i] == '\0' && c != 0)
-		return (NULL);
 	}
-	return ((char *)s + i + 1);
+	return(NULL);
 }
 
 
