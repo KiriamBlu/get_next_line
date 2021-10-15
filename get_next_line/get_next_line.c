@@ -1,10 +1,20 @@
 #include "get_next_line.h"
 
-char *preparea(int fd, char **save)
+char *lastlane(char **save)
+{
+	char *ai;
+
+	ai = ft_substr(*save, 0, ft_strlen(*save) + 1);
+	*save = ft_substr("", 0, 0);
+	return(ai);
+}
+
+char *preparea(int fd, char **save, ssize_t num)
 {
 	char	*a;
 	char	*ai;
 
+	a = malloc(num * sizeof(char) + 1);
 	a = ft_beforejump(*save);
 	if(ft_strlen(ft_beforejump(*save)) != ft_strlen(*save))
 	{
@@ -22,11 +32,11 @@ char *preparea(int fd, char **save)
 
 char *ft_getline(int fd, char **save)
 {
-char *a;
 char *ai;
+char *aux;
 ssize_t num;
 
-while(!ft_beforejump(*save))
+while(!ft_beforejump(*save) && read(fd, aux, BUFFER_SIZE))
 {
 	if(*save)
 	{
@@ -40,19 +50,20 @@ while(!ft_beforejump(*save))
 	{
 		*save = (char *)malloc(BUFFER_SIZE * sizeof(char) + 1);
 		num = read(fd, *save, BUFFER_SIZE);
-		a = malloc(num * sizeof(char) + 1);
 	}
 }
-a = preparea(fd, &(*save));
-return (a);
+if(!read(fd, aux, BUFFER_SIZE) && !ft_strchr(*save, '\n'))
+	return(lastlane(&(*save)));
+return(preparea(fd, &(*save), num));
 }
 
 char *get_next_line(int fd)
 {
-	ssize_t		count;
 	static char	*save[4096];
 	char *a;
 
+	if (BUFFER_SIZE <= 0 || fd < 0)
+		return (NULL);
 	if (fd < 0 || fd > 4096 || BUFFER_SIZE <= 0)
 		return (NULL);
 	a = ft_getline(fd, &(*save));
@@ -70,20 +81,21 @@ int main()
 	char	*line;
 	int		j;
 
+	j = 0;
 	fd = open("test.txt", O_RDONLY);
 	fd2 = open("test2.txt", O_RDONLY);
-	while (j < 265)
+	while (j < 1)
 	{
 		line = get_next_line(fd);
 		printf("%s", line);
 		j++;
 	}
 	j = 0;
-/*	while (j < 2)
+	while (j < 2)
 	{
 		line = get_next_line(fd2);
-		printf("[%s]\n", line);
+		printf("%s", line);
 		j++;
-	}*/
+	}
 	return(0);
 }
