@@ -1,4 +1,4 @@
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 void firstenty(int fd, char **save)
 {
@@ -29,6 +29,7 @@ char *doafterjump(char **save)
 	free(auxi);
 	return(aux);
 }
+
 void middlepart(int fd, char **save)
 {
 	char *aux;
