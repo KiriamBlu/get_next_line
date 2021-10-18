@@ -82,7 +82,7 @@ char *get_next_line(int fd)
 	if (!a)
 	{
 		free(*save);
-		return(NULL);
+		return (NULL);
 	}
 	return (a);
 }

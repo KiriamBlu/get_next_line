@@ -1,9 +1,9 @@
 #include "get_next_line.h"
 
-void firstenty(int fd, char **save)
+void	firstenty(int fd, char **save)
 {
-	char *aux;
-	ssize_t num;
+	char	*aux;
+	ssize_t	num;
 
 	aux = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
 	num = read(fd, aux, BUFFER_SIZE);
@@ -17,7 +17,7 @@ void firstenty(int fd, char **save)
 	free(aux);
 }
 
-char *doafterjump(char **save)
+char	*doafterjump(char **save)
 {
 	char	*aux;
 	char	*auxi;
@@ -27,9 +27,10 @@ char *doafterjump(char **save)
 	free(*save);
 	*save = ft_substr(auxi, 0, ft_strlen(auxi));
 	free(auxi);
-	return(aux);
+	return (aux);
 }
-void middlepart(int fd, char **save)
+
+void	middlepart(int fd, char **save)
 {
 	char *aux;
 	ssize_t num;
@@ -44,13 +45,13 @@ void middlepart(int fd, char **save)
 		*save = ft_strjoin(*save, aux);
 		free(aux);
 		if (!read(fd, check, BUFFER_SIZE))
-				return ;
+			return ;
 	}
 }
 
-char *ft_getline(int fd, char **save)
+char	*ft_getline(int fd, char **save)
 {
-	char *aux;
+	char	*aux;
 	
 	if(!*save)
 		firstenty(fd, &(*save));
@@ -66,14 +67,14 @@ char *ft_getline(int fd, char **save)
 			*save = NULL;
 		}
 	else
-		return(NULL);
-	return(aux);
+		return (NULL);
+	return (aux);
 }
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
 	static char	*save[4096];
-	char *a;
+	char		*a;
 
 	if (fd < 0 || fd > 4096 || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -81,7 +82,7 @@ char *get_next_line(int fd)
 	if (!a)
 	{
 		free(*save);
-		return(NULL);
+		return (NULL);
 	}
 	return (a);
 }
