@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/18 13:01:54 by jsanfeli          #+#    #+#             */
+/*   Updated: 2021/10/18 13:14:46 by jsanfeli         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line_bonus.h"
 
-void firstenty(int fd, char **save)
+void	firstenty(int fd, char **save)
 {
-	char *aux;
-	ssize_t num;
+	char	*aux;
+	ssize_t	num;
 
 	aux = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
 	num = read(fd, aux, BUFFER_SIZE);
@@ -17,27 +29,27 @@ void firstenty(int fd, char **save)
 	free(aux);
 }
 
-char *doafterjump(char **save)
+char	*doafterjump(char **sa)
 {
-	char	*aux;
-	char	*auxi;
+	char	*a;
+	char	*ai;
 
-	aux = ft_beforejump(*save);
-	auxi = ft_substr(ft_strchr(*save, '\n'), 0, ft_strlen(ft_strchr(*save, '\n')));
-	free(*save);
-	*save = ft_substr(auxi, 0, ft_strlen(auxi));
-	free(auxi);
-	return(aux);
+	a = ft_beforejump(*sa);
+	ai = ft_substr(ft_strchr(*sa, '\n'), 0, ft_strlen(ft_strchr(*sa, '\n')));
+	free(*sa);
+	*sa = ft_substr(ai, 0, ft_strlen(ai));
+	free(ai);
+	return (a);
 }
 
-void middlepart(int fd, char **save)
+void	middlepart(int fd, char **save)
 {
-	char *aux;
-	ssize_t num;
-	char *check;
+	char	*aux;
+	ssize_t	num;
+	char	*check;
 
 	check = NULL;
-	while(!ft_strchr(*save, '\n'))
+	while (!ft_strchr(*save, '\n'))
 	{
 		aux = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
 		num = read(fd, aux, BUFFER_SIZE);
@@ -45,36 +57,36 @@ void middlepart(int fd, char **save)
 		*save = ft_strjoin(*save, aux);
 		free(aux);
 		if (!read(fd, check, BUFFER_SIZE))
-				return ;
+			return ;
 	}
 }
 
-char *ft_getline(int fd, char **save)
+char	*ft_getline(int fd, char **save)
 {
-	char *aux;
-	
-	if(!*save)
+	char	*aux;
+
+	if (!*save)
 		firstenty(fd, &(*save));
-	if(!*save)
+	if (!*save)
 		return (NULL);
 	middlepart(fd, &(*save));
 	if (ft_strchr(*save, '\n'))
 		aux = doafterjump(&(*save));
 	else if (ft_strlen(*save) > 0)
-		{
-			aux = ft_substr(*save, 0, ft_strlen(*save));
-			free(*save);
-			*save = NULL;
-		}
+	{
+		aux = ft_substr(*save, 0, ft_strlen(*save));
+		free(*save);
+		*save = NULL;
+	}
 	else
-		return(NULL);
-	return(aux);
+		return (NULL);
+	return (aux);
 }
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
 	static char	*save[4096];
-	char *a;
+	char		*a;
 
 	if (fd < 0 || fd > 4096 || BUFFER_SIZE <= 0)
 		return (NULL);

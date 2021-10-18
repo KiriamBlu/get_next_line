@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/18 13:01:54 by jsanfeli          #+#    #+#             */
+/*   Updated: 2021/10/18 13:20:26 by jsanfeli         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line_bonus.h"
 
 ssize_t	ft_strlen(const char *c)
@@ -17,13 +29,11 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	char	*str;
 	size_t	i;
 	size_t	j;
-	size_t	len;
 
 	i = 0;
 	if (!s1 || !s2)
 		return (NULL);
-	len = ft_strlen(s1) + ft_strlen(s2);
-	str = (char *)malloc((len + 1) * sizeof(char));
+	str = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
 	if (!str)
 		return (NULL);
 	while (*(s1 + i) != '\0')
@@ -48,35 +58,34 @@ char	*ft_beforejump(const char *save)
 	char	*aux;
 	ssize_t	i;
 	ssize_t	j;
-	ssize_t len;
+	ssize_t	len;
 
 	i = 0;
 	j = 0;
-
 	aux = (char *)save;
-	if(!aux)
-		return(NULL);
+	if (!aux)
+		return (NULL);
 	len = ft_strlen(aux);
-	while(i < len)
+	while (i < len)
 	{	
 		if (aux[i] == '\n')
 		{
 			beforebuff = ft_substr(aux, 0, i + 1);
-			return(beforebuff);
+			return (beforebuff);
 		}
 		i++;
 	}
-	return(NULL);
+	return (NULL);
 }
 
-char *ft_substr(const char *s, unsigned int start, size_t len)
+char	*ft_substr(const char *s, unsigned int start, size_t len)
 {
-	char *a;
-	size_t i;
+	char	*a;
+	size_t	i;
 	size_t	lens;
 
+	i = 0;
 	lens = ft_strlen(s);
- 	i = 0;
 	if (!s)
 		return (NULL);
 	if (start >= lens)
@@ -95,22 +104,22 @@ char *ft_substr(const char *s, unsigned int start, size_t len)
 	return (a);
 }
 
-char *ft_strchr(const char *s, int c)
+char	*ft_strchr(const char *s, int c)
 {
-	ssize_t i;
-	ssize_t j;
-	char *a;
+	ssize_t	i;
+	ssize_t	j;
+	char	*a;
 
 	i = 0;
 	j = ft_strlen(s);
 	a = (char *)s;
 	if (!s)
-		return(NULL);
+		return (NULL);
 	while (i < j)
 	{
-		if(s[i] == (char)c)
+		if (s[i] == (char)c)
 			return (&a[i + 1]);
 		i++;
 	}
-	return(NULL);
+	return (NULL);
 }
