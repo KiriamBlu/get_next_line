@@ -12,28 +12,35 @@ ssize_t	ft_strlen(const char *c)
 	return (i);
 }
 
-char	*ft_chartostr(const char *buffer, const char *auxline, size_t len)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*ptr;
-	size_t i;
-	size_t j;
+	char	*str;
+	size_t	i;
+	size_t	j;
+	size_t	len;
 
-	if(!auxline || !buffer)
-		return(NULL);
-	ptr = (char *)malloc(sizeof(char) * len + 1);
-	if (!ptr)
-		return (NULL);
 	i = 0;
-	while (buffer[i])
-	{		
-		ptr[i] = buffer[i];	
+	if (!s1 || !s2)
+		return (NULL);
+	len = ft_strlen(s1) + ft_strlen(s2);
+	str = (char *)malloc((len + 1) * sizeof(char));
+	if (!str)
+		return (NULL);
+	while (*(s1 + i) != '\0')
+	{
+		*(str + i) = *(s1 + i);
 		i++;
 	}
 	j = 0;
-	while (auxline[j] && i < len - 1)
-		ptr[i++] = auxline[j++];
-	ptr[len] = '\0';
-	return (ptr);
+	free((void *)s1);
+	while (*(s2 + j) != '\0')
+	{
+		*(str + i + j) = *(s2 + j);
+		j++;
+	}
+	free((void *)s2);
+	str[i + j] = '\0';
+	return (str);
 }
 
 char	*ft_beforejump(const char *save)
